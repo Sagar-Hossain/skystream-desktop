@@ -444,11 +444,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     };
   }
 
+  bool get _isDesktopPlatform =>
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.linux;
+
   Widget _withGradientEdgeHint(Widget scrollView) {
     return Stack(
       children: [
         ScrollConfiguration(
-          behavior: const NoScrollbarBehavior(),
+          // Desktop (Windows/macOS/Linux) has a mouse, so keep the normal
+          // draggable scrollbar there; touch platforms keep the gradient hint.
+          behavior: _isDesktopPlatform
+              ? const MaterialScrollBehavior()
+              : const NoScrollbarBehavior(),
           child: scrollView,
         ),
         Positioned(
