@@ -341,11 +341,21 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
+  bool _isDesktopPlatform(BuildContext context) {
+    final platform = Theme.of(context).platform;
+    return platform == TargetPlatform.windows ||
+        platform == TargetPlatform.macOS ||
+        platform == TargetPlatform.linux;
+  }
+
   Widget _withGradientEdgeHint(Widget scrollView) {
     return Stack(
       children: [
         ScrollConfiguration(
-          behavior: const NoScrollbarBehavior(),
+          // Desktop has a mouse, so keep the normal draggable scrollbar there.
+          behavior: _isDesktopPlatform(context)
+              ? const MaterialScrollBehavior()
+              : const NoScrollbarBehavior(),
           child: scrollView,
         ),
         Positioned(
